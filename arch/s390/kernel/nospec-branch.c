@@ -44,6 +44,7 @@ static int __init nospec_report(void)
 }
 arch_initcall(nospec_report);
 
+<<<<<<< HEAD
 #ifdef CONFIG_SYSFS
 ssize_t cpu_show_spectre_v1(struct device *dev,
 			    struct device_attribute *attr, char *buf)
@@ -62,6 +63,8 @@ ssize_t cpu_show_spectre_v2(struct device *dev,
 }
 #endif
 
+=======
+>>>>>>> 7620164e85e48ea381a52864d729a7731be8d7f2
 #ifdef CONFIG_EXPOLINE
 
 int nospec_disable = IS_ENABLED(CONFIG_EXPOLINE_OFF);
@@ -112,7 +115,10 @@ static void __init_or_module __nospec_revert(s32 *start, s32 *end)
 	s32 *epo;
 
 	/* Second part of the instruction replace is always a nop */
+<<<<<<< HEAD
 	memcpy(insnbuf + 2, (char[]) { 0x47, 0x00, 0x00, 0x00 }, 4);
+=======
+>>>>>>> 7620164e85e48ea381a52864d729a7731be8d7f2
 	for (epo = start; epo < end; epo++) {
 		instr = (u8 *) epo + *epo;
 		if (instr[0] == 0xc0 && (instr[1] & 0x0f) == 0x04)
@@ -133,6 +139,7 @@ static void __init_or_module __nospec_revert(s32 *start, s32 *end)
 			br = thunk + (*(int *)(thunk + 2)) * 2;
 		else
 			continue;
+<<<<<<< HEAD
 		if (br[0] != 0x07 || (br[1] & 0xf0) != 0xf0)
 			continue;
 		switch (type) {
@@ -145,6 +152,36 @@ static void __init_or_module __nospec_revert(s32 *start, s32 *end)
 			/* brasl to thunk, replace with basr + nop */
 			insnbuf[0] = 0x0d;
 			insnbuf[1] = (instr[1] & 0xf0) | (br[1] & 0x0f);
+=======
+		/* Check for unconditional branch 0x07f? or 0x47f???? */
+		if ((br[0] & 0xbf) != 0x07 || (br[1] & 0xf0) != 0xf0)
+			continue;
+
+		memcpy(insnbuf + 2, (char[]) { 0x47, 0x00, 0x07, 0x00 }, 4);
+		switch (type) {
+		case BRCL_EXPOLINE:
+			insnbuf[0] = br[0];
+			insnbuf[1] = (instr[1] & 0xf0) | (br[1] & 0x0f);
+			if (br[0] == 0x47) {
+				/* brcl to b, replace with bc + nopr */
+				insnbuf[2] = br[2];
+				insnbuf[3] = br[3];
+			} else {
+				/* brcl to br, replace with bcr + nop */
+			}
+			break;
+		case BRASL_EXPOLINE:
+			insnbuf[1] = (instr[1] & 0xf0) | (br[1] & 0x0f);
+			if (br[0] == 0x47) {
+				/* brasl to b, replace with bas + nopr */
+				insnbuf[0] = 0x4d;
+				insnbuf[2] = br[2];
+				insnbuf[3] = br[3];
+			} else {
+				/* brasl to br, replace with basr + nop */
+				insnbuf[0] = 0x0d;
+			}
+>>>>>>> 7620164e85e48ea381a52864d729a7731be8d7f2
 			break;
 		}
 
