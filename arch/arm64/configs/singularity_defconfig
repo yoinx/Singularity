@@ -1,5 +1,5 @@
 CONFIG_CUSTOM_ROM=y
-CONFIG_LOCALVERSION="-Singularity-Custom-V-1.0.9.1"
+CONFIG_LOCALVERSION="-Singularity-Custom-V-1.0.9.2"
 # CONFIG_USELIB is not set
 CONFIG_AUDIT=y
 # CONFIG_AUDITSYSCALL is not set
