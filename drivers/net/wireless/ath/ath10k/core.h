@@ -174,10 +174,6 @@ struct ath10k_wmi {
 	const struct wmi_ops *ops;
 	const struct wmi_peer_flags_map *peer_flags;
 
-	u32 mgmt_max_num_pending_tx;
-	struct idr mgmt_pending_tx;
-	/* Protects access to mgmt_pending_tx, mgmt_max_num_pending_tx */
-	spinlock_t mgmt_tx_lock;
 	u32 num_mem_chunks;
 	u32 rx_decap_mode;
 	struct ath10k_mem_chunk mem_chunks[WMI_MAX_MEM_REQS];
@@ -787,51 +783,7 @@ struct ath10k {
 	struct ath10k_htc htc;
 	struct ath10k_htt htt;
 
-	struct ath10k_hw_params {
-		u32 id;
-		u16 dev_id;
-		const char *name;
-		u32 patch_load_addr;
-		int uart_pin;
-		u32 otp_exe_param;
-
-		/* This is true if given HW chip has a quirky Cycle Counter
-		 * wraparound which resets to 0x7fffffff instead of 0. All
-		 * other CC related counters (e.g. Rx Clear Count) are divided
-		 * by 2 so they never wraparound themselves.
-		 */
-		bool has_shifted_cc_wraparound;
-
-		/* Some of chip expects fragment descriptor to be continuous
-		 * memory for any TX operation. Set continuous_frag_desc flag
-		 * for the hardware which have such requirement.
-		 */
-		bool continuous_frag_desc;
-
-		u32 channel_counters_freq_hz;
-
-		/* Mgmt tx descriptors threshold for limiting probe response
-		 * frames.
-		 */
-		u32 max_probe_resp_desc_thres;
-
-		struct ath10k_hw_params_fw {
-			const char *dir;
-			const char *fw;
-			const char *otp;
-			const char *board;
-			size_t board_size;
-			size_t board_ext_size;
-		} fw;
-
-		/* Number of bytes used for alignment in rx_hdr_status */
-		int decap_align_bytes;
-
-	} hw_params;
-
-	const struct firmware *board;
-	const void *board_data;
-	size_t board_len;
+	struct ath10k_hw_params hw_params;
 
 	/* contains the firmware images used with ATH10K_FIRMWARE_MODE_NORMAL */
 	struct ath10k_fw_components normal_mode_fw;
@@ -872,7 +824,7 @@ struct ath10k {
 	} scan;
 
 	struct {
-		struct ieee80211_supported_band sbands[NUM_NL80211_BANDS];
+		struct ieee80211_supported_band sbands[IEEE80211_NUM_BANDS];
 	} mac;
 
 	/* should never be NULL; needed for regular htt rx */
@@ -1015,7 +967,6 @@ struct ath10k {
 	struct completion peer_delete_done;
 	bool is_bmi;
 	enum ieee80211_sta_state sta_state;
-	bool rri_on_ddr;
 	/* must be last */
 	u8 drv_priv[0] __aligned(sizeof(void *));
 };

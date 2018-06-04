@@ -67,7 +67,27 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA988X_BOARD_DATA_SZ,
 			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
+		.decap_align_bytes = 4,
+	},
+	{
+		.id = QCA9887_HW_1_0_VERSION,
+		.dev_id = QCA9887_1_0_DEVICE_ID,
+		.name = "qca9887 hw1.0",
+		.patch_load_addr = QCA9887_HW_1_0_PATCH_LOAD_ADDR,
+		.uart_pin = 7,
+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_ALL,
+		.otp_exe_param = 0,
+		.channel_counters_freq_hz = 88000,
+		.max_probe_resp_desc_thres = 0,
+		.cal_data_len = 2116,
+		.fw = {
+			.dir = QCA9887_HW_1_0_FW_DIR,
+			.board = QCA9887_HW_1_0_BOARD_DATA_FILE,
+			.board_size = QCA9887_BOARD_DATA_SZ,
+			.board_ext_size = QCA9887_BOARD_EXT_DATA_SZ,
+		},
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -86,7 +106,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA6174_BOARD_DATA_SZ,
 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -105,7 +125,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA6174_BOARD_DATA_SZ,
 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -124,7 +144,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA6174_BOARD_DATA_SZ,
 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -144,7 +164,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA6174_BOARD_DATA_SZ,
 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -168,7 +188,57 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA99X0_BOARD_DATA_SZ,
 			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
 		},
-
+		.sw_decrypt_mcast_mgmt = true,
+		.hw_ops = &qca99x0_ops,
+		.decap_align_bytes = 1,
+	},
+	{
+		.id = QCA9984_HW_1_0_DEV_VERSION,
+		.dev_id = QCA9984_1_0_DEVICE_ID,
+		.name = "qca9984/qca9994 hw1.0",
+		.patch_load_addr = QCA9984_HW_1_0_PATCH_LOAD_ADDR,
+		.uart_pin = 7,
+		.otp_exe_param = 0x00000700,
+		.continuous_frag_desc = true,
+		.cck_rate_map_rev2 = true,
+		.channel_counters_freq_hz = 150000,
+		.max_probe_resp_desc_thres = 24,
+		.tx_chain_mask = 0xf,
+		.rx_chain_mask = 0xf,
+		.max_spatial_stream = 4,
+		.cal_data_len = 12064,
+		.fw = {
+			.dir = QCA9984_HW_1_0_FW_DIR,
+			.board = QCA9984_HW_1_0_BOARD_DATA_FILE,
+			.board_size = QCA99X0_BOARD_DATA_SZ,
+			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+		},
+		.sw_decrypt_mcast_mgmt = true,
+		.hw_ops = &qca99x0_ops,
+		.decap_align_bytes = 1,
+	},
+	{
+		.id = QCA9888_HW_2_0_DEV_VERSION,
+		.dev_id = QCA9888_2_0_DEVICE_ID,
+		.name = "qca9888 hw2.0",
+		.patch_load_addr = QCA9888_HW_2_0_PATCH_LOAD_ADDR,
+		.uart_pin = 7,
+		.otp_exe_param = 0x00000700,
+		.continuous_frag_desc = true,
+		.channel_counters_freq_hz = 150000,
+		.max_probe_resp_desc_thres = 24,
+		.tx_chain_mask = 3,
+		.rx_chain_mask = 3,
+		.max_spatial_stream = 2,
+		.cal_data_len = 12064,
+		.fw = {
+			.dir = QCA9888_HW_2_0_FW_DIR,
+			.board = QCA9888_HW_2_0_BOARD_DATA_FILE,
+			.board_size = QCA99X0_BOARD_DATA_SZ,
+			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
+		},
+		.sw_decrypt_mcast_mgmt = true,
+		.hw_ops = &qca99x0_ops,
 		.decap_align_bytes = 1,
 	},
 	{
@@ -187,7 +257,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA9377_BOARD_DATA_SZ,
 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
 	},
 	{
@@ -206,8 +276,49 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
 			.board_size = QCA9377_BOARD_DATA_SZ,
 			.board_ext_size = QCA9377_BOARD_EXT_DATA_SZ,
 		},
-
+		.hw_ops = &qca988x_ops,
 		.decap_align_bytes = 4,
+	},
+	{
+		.id = QCA4019_HW_1_0_DEV_VERSION,
+		.dev_id = 0,
+		.name = "qca4019 hw1.0",
+		.patch_load_addr = QCA4019_HW_1_0_PATCH_LOAD_ADDR,
+		.uart_pin = 7,
+		.cc_wraparound_type = ATH10K_HW_CC_WRAP_SHIFTED_EACH,
+		.otp_exe_param = 0x0010000,
+		.continuous_frag_desc = true,
+		.cck_rate_map_rev2 = true,
+		.channel_counters_freq_hz = 125000,
+		.max_probe_resp_desc_thres = 24,
+		.tx_chain_mask = 0x3,
+		.rx_chain_mask = 0x3,
+		.max_spatial_stream = 2,
+		.cal_data_len = 12064,
+		.fw = {
+			.dir = QCA4019_HW_1_0_FW_DIR,
+			.board = QCA4019_HW_1_0_BOARD_DATA_FILE,
+			.board_size = QCA4019_BOARD_DATA_SZ,
+			.board_ext_size = QCA4019_BOARD_EXT_DATA_SZ,
+		},
+		.sw_decrypt_mcast_mgmt = true,
+		.hw_ops = &qca99x0_ops,
+		.decap_align_bytes = 1,
+	},
+	{
+		.id = ATH10K_HW_WCN3990,
+		.dev_id = 0,
+		.name = "wcn3990 hw1.0",
+		.continuous_frag_desc = true,
+		.tx_chain_mask = 0x7,
+		.rx_chain_mask = 0x7,
+		.max_spatial_stream = 4,
+		.fw = {
+			.dir = WCN3990_HW_1_0_FW_DIR,
+		},
+		.sw_decrypt_mcast_mgmt = true,
+		.hw_ops = &wcn3990_ops,
+		.decap_align_bytes = 1,
 	},
 };
 
@@ -1192,15 +1303,13 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
 	int ret;
 	struct ath10k_fw_file *fw_file;
 
-	if (!ar->is_bmi) {
+	if (!ar->is_bmi && QCA_REV_WCN3990(ar)) {
 		fw_file = &ar->normal_mode_fw.fw_file;
 		fw_file->wmi_op_version = ATH10K_FW_WMI_OP_VERSION_TLV;
 		fw_file->htt_op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
 		__set_bit(ATH10K_FW_FEATURE_WOWLAN_SUPPORT,
 			  fw_file->fw_features);
 		__set_bit(WMI_SERVICE_WOW, ar->wmi.svc_map);
-		__set_bit(ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING,
-			  fw_file->fw_features);
 		return 0;
 	}
 
@@ -1604,7 +1713,6 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
 			WMI_STAT_PEER;
 		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
-		ar->wmi.mgmt_max_num_pending_tx = TARGET_TLV_MGMT_NUM_MSDU_DESC;
 		break;
 	case ATH10K_FW_WMI_OP_VERSION_10_4:
 		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
@@ -1983,7 +2091,7 @@ void ath10k_core_stop(struct ath10k *ar)
 	/* try to suspend target */
 	if (ar->state != ATH10K_STATE_RESTARTING &&
 	    ar->state != ATH10K_STATE_UTF)
-		ath10k_wait_for_suspend(ar, ar->hw_values->pdev_suspend_option);
+		ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
 
 	ath10k_hif_stop(ar);
 	ath10k_htt_tx_free(&ar->htt);
@@ -2266,7 +2374,6 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
 		ar->fw_flags = &wcn3990_fw_flags;
 		ar->shadow_reg_value = &wcn3990_shadow_reg_value;
 		ar->shadow_reg_address = &wcn3990_shadow_reg_address;
-		ar->rri_on_ddr = true;
 		break;
 	default:
 		ath10k_err(ar, "unsupported core hardware revision %d\n",
