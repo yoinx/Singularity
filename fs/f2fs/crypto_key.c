@@ -188,6 +188,8 @@ int f2fs_get_encryption_info(struct inode *inode)
 		keyring_key = NULL;
 		goto out;
 	}
+
+	crypt_info->ci_keyring_key = keyring_key;
 	if (keyring_key->type != &key_type_logon) {
 		printk_once(KERN_WARNING "f2fs: key type must be logon\n");
 		res = -ENOKEY;
