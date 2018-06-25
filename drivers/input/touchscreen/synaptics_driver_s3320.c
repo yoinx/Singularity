@@ -178,7 +178,7 @@ static int gesture_switch;
 
 // module parameter
 bool s3320_stop_buttons;
-bool no_buttons_during_touch = false;
+bool no_buttons_during_touch = true;
 module_param(no_buttons_during_touch, bool, 0644);
 bool haptic_feedback_disable = false;
 module_param(haptic_feedback_disable, bool, 0644);
