@@ -29,6 +29,13 @@
 
 #define DRV_NAME	"tri-state-key"
 
+#define KEYCODE_BASE 600
+
+static int keyCode_slider_top = KEYCODE_BASE + 1;
+static int keyCode_slider_middle = KEYCODE_BASE + 2;
+static int keyCode_slider_bottom = KEYCODE_BASE + 3;
+
+
 /*
 	        	KEY1(GPIO1)	KEY2(GPIO92)
 pin1 connect to pin4	0	            1         | MUTE
@@ -38,11 +45,9 @@ pin4 connect to pin3	1	            0         | Normal
 */
 typedef enum
 {
-	MODE_UNKNOWN,
 	MODE_MUTE,
 	MODE_DO_NOT_DISTURB,
 	MODE_NORMAL,
-	MODE_MAX_NUM
 } tri_mode_t;
 
 struct switch_dev_data
@@ -58,6 +63,7 @@ struct switch_dev_data
 
 	struct work_struct work;
 	struct switch_dev sdev;
+	struct input_dev *input;
 	struct device *dev;
 
 	struct timer_list s_timer;
@@ -77,12 +83,21 @@ static int set_gpio_by_pinctrl(void)
 static int key_pre[3] = {1, 1, 1};
 static int delay_time;
 
+static void send_input(int keyCode)
+{
+	input_report_key(switch_data->input, keyCode, 1);
+	input_sync(switch_data->input);
+	input_report_key(switch_data->input, keyCode, 0);
+	input_sync(switch_data->input);
+}
+
 static void switch_dev_work(struct work_struct *work)
 {
 	int key[3];
 	int i, j;
 	bool have_wrong_key = false;
 	int state_same = 0;
+	int keycode = 0;
 
 	msleep(delay_time);
 	key[0] = gpio_get_value(switch_data->key1_gpio);
@@ -116,57 +131,59 @@ static void switch_dev_work(struct work_struct *work)
 	mutex_lock(&sem);
 	if (have_wrong_key == true) {
 		if (key[0]+key[1]+key[2] == 2) {
-			if (i == 0)
-				switch_set_state(
-				&switch_data->sdev,
-				MODE_MUTE);
-			if (i == 1)
-				switch_set_state(
-				&switch_data->sdev,
-				MODE_DO_NOT_DISTURB);
-			if (i == 2)
-				switch_set_state(
-				&switch_data->sdev,
-				MODE_NORMAL);
+			if (i == 0) {
+				switch_set_state(&switch_data->sdev, MODE_MUTE);
+				keycode = keyCode_slider_top;
 			}
+			if (i == 1) {
+				switch_set_state(&switch_data->sdev, MODE_DO_NOT_DISTURB);
+				keycode = keyCode_slider_middle;
+			}
+			if (i == 2) {
+				switch_set_state(&switch_data->sdev, MODE_NORMAL);
+				keycode = keyCode_slider_bottom;
+			}
+		}
 		else {
 			for (j = 0; j < 3; j++) {
 			/* we got the  gpio is wrong state,
 			*  then check which gpio
 			*/
 				if ((key[j] == 0) && (i != j)) {
-					if (j == 0)
-						switch_set_state(
-						&switch_data->sdev,
-						MODE_MUTE);
-					if (j == 1)
-						switch_set_state(
-						&switch_data->sdev,
-						MODE_DO_NOT_DISTURB);
-					if (j == 2)
-						switch_set_state(
-						&switch_data->sdev,
-						MODE_NORMAL);
+					if (j == 0){
+						switch_set_state(&switch_data->sdev, MODE_MUTE);
+						keycode = keyCode_slider_top;
+					}
+					if (j == 1) {
+						switch_set_state(&switch_data->sdev, MODE_DO_NOT_DISTURB);
+						keycode = keyCode_slider_middle;
+					}
+					if (j == 2) {
+						switch_set_state(&switch_data->sdev, MODE_NORMAL);
+						keycode = keyCode_slider_bottom;
+					}
 				}
 			}
 		}
 	} else {
-		if (!key[0])
-			switch_set_state(
-			&switch_data->sdev,
-			MODE_MUTE);
-		if (!key[1])
-			switch_set_state(
-			&switch_data->sdev,
-			MODE_DO_NOT_DISTURB);
-		if (!key[2])
-			switch_set_state(
-			&switch_data->sdev,
-			MODE_NORMAL);
+		if (!key[0]){
+			switch_set_state(&switch_data->sdev, MODE_MUTE);
+			keycode = keyCode_slider_top;
 		}
+		if (!key[1]) {
+			switch_set_state(&switch_data->sdev, MODE_DO_NOT_DISTURB);
+			keycode = keyCode_slider_middle;
+		}
+		if (!key[2]) {
+			switch_set_state(&switch_data->sdev, MODE_NORMAL);
+			keycode = keyCode_slider_bottom;
+		}
+	}
 	for (i = 0; i < 3; i++)
 		key_pre[i] = key[i];
 
+	send_input(keycode);
+	
 	pr_err("%s ,tristatekey set to state(%d)\n",
 	__func__, switch_data->sdev.state);
 	mutex_unlock(&sem);
